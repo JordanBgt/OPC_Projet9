@@ -6,15 +6,12 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import com.dummy.myerp.model.bean.comptabilite.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.TransactionStatus;
 import com.dummy.myerp.business.contrat.manager.ComptabiliteManager;
 import com.dummy.myerp.business.impl.AbstractBusinessManager;
-import com.dummy.myerp.model.bean.comptabilite.CompteComptable;
-import com.dummy.myerp.model.bean.comptabilite.EcritureComptable;
-import com.dummy.myerp.model.bean.comptabilite.JournalComptable;
-import com.dummy.myerp.model.bean.comptabilite.LigneEcritureComptable;
 import com.dummy.myerp.technical.exception.FunctionalException;
 import com.dummy.myerp.technical.exception.NotFoundException;
 
@@ -61,19 +58,23 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
     // TODO à tester
     @Override
     public synchronized void addReference(EcritureComptable pEcritureComptable) {
-        // TODO à implémenter
-        // Bien se réferer à la JavaDoc de cette méthode !
-        /* Le principe :
-                1.  Remonter depuis la persitance la dernière valeur de la séquence du journal pour l'année de l'écriture
-                    (table sequence_ecriture_comptable)
-                2.  * S'il n'y a aucun enregistrement pour le journal pour l'année concernée :
-                        1. Utiliser le numéro 1.
-                    * Sinon :
-                        1. Utiliser la dernière valeur + 1
-                3.  Mettre à jour la référence de l'écriture avec la référence calculée (RG_Compta_5)
-                4.  Enregistrer (insert/update) la valeur de la séquence en persitance
-                    (table sequence_ecriture_comptable)
-         */
+        SequenceEcritureComptable sequenceEcritureComptable = getDaoProxy().getComptabiliteDao().getLastSequenceEcritureComptableByJournalCode(pEcritureComptable.getJournal().getCode());
+        Integer lastSequenceValue = sequenceEcritureComptable.getDerniereValeur() ==  null ? 1 : sequenceEcritureComptable.getDerniereValeur() + 1;
+        String formatLastSequenceValue = "";
+        if (lastSequenceValue.toString().length() < 5) {
+            StringBuilder sb = new StringBuilder();
+            while (sb.length() < 5 - lastSequenceValue.toString().length()) {
+                sb.append('0');
+            }
+            sb.append(lastSequenceValue);
+            formatLastSequenceValue = sb.toString();
+        } /*else if (lastSequenceValue.length() > 5) {
+           throw new Exception("La dernière valeur de la sequence est supérieure à 99999"); // TODO : JB => voir si on throw une exception ou pas, auquel cas il faut modifier l'interface
+       }*/
+        String reference = pEcritureComptable.getJournal().getCode() + "-" + sequenceEcritureComptable.getAnnee() + "/" + formatLastSequenceValue;
+        pEcritureComptable.setReference(reference);
+        getDaoProxy().getComptabiliteDao().updateDerniereValeurSequenceEcritureComptableByJournalCode(lastSequenceValue, pEcritureComptable.getJournal().getCode());
+
     }
 
     /**
