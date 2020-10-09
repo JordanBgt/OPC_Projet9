@@ -10,6 +10,8 @@ import com.dummy.myerp.model.bean.comptabilite.JournalComptable;
 import com.dummy.myerp.model.bean.comptabilite.LigneEcritureComptable;
 import com.dummy.myerp.technical.exception.FunctionalException;
 
+import javax.validation.ConstraintViolationException;
+
 
 public class ComptabiliteManagerImplTest {
 
@@ -32,7 +34,7 @@ public class ComptabiliteManagerImplTest {
         manager.checkEcritureComptableUnit(vEcritureComptable);
     }
 
-    @Test(expected = FunctionalException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void checkEcritureComptableUnitViolation() throws Exception {
         EcritureComptable vEcritureComptable;
         vEcritureComptable = new EcritureComptable();
