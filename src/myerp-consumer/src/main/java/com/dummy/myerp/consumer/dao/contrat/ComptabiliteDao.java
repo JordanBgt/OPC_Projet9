@@ -5,6 +5,7 @@ import java.util.List;
 import com.dummy.myerp.model.bean.comptabilite.CompteComptable;
 import com.dummy.myerp.model.bean.comptabilite.EcritureComptable;
 import com.dummy.myerp.model.bean.comptabilite.JournalComptable;
+import com.dummy.myerp.model.bean.comptabilite.SequenceEcritureComptable;
 import com.dummy.myerp.technical.exception.NotFoundException;
 
 
@@ -80,4 +81,22 @@ public interface ComptabiliteDao {
      * @param pId l'id de l'écriture
      */
     void deleteEcritureComptable(Integer pId);
+
+    // ==================== SequenceEcritureComptable ====================
+
+    /**
+     * Récupère la dernière valeur de la séquence écriture comptable pour le code
+     *
+     * @param journalCode code du journal dont on souhaite récupérer la séquence
+     * @return Integer
+     */
+    SequenceEcritureComptable getLastSequenceEcritureComptableByJournalCode(String journalCode);
+
+    /**
+     * Mettre à jour le champ "derniere_valeur" de la séquence écriture comptable
+     *
+     * @param lastValue Integer qui représente la dernière valeur donnée pour référence
+     * @param journalCode code du journal dont la valeur doit être mise à jour
+     */
+    void updateDerniereValeurSequenceEcritureComptableByJournalCode(Integer derniereValeur, String journalCode);
 }
