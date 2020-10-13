@@ -22,6 +22,11 @@ public abstract class ConsumerHelper {
         daoProxy = pDaoProxy;
     }
 
+    /**
+     * Add private constructor to hide implicit public one created by Java
+     */
+    private ConsumerHelper() {}
+
 
     // ==================== Getters/Setters ====================
     public static DaoProxy getDaoProxy() {

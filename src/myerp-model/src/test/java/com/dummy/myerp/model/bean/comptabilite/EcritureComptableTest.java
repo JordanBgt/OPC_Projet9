@@ -22,8 +22,7 @@ public class EcritureComptableTest {
 
     @Test
     public void isEquilibree() {
-        EcritureComptable vEcriture;
-        vEcriture = new EcritureComptable();
+        EcritureComptable vEcriture = new EcritureComptable();
 
         vEcriture.setLibelle("Equilibrée");
         vEcriture.getListLigneEcriture().add(this.createLigne(1, "200.50", null));
