@@ -26,10 +26,12 @@ public class SequenceEcritureComptable {
      *
      * @param pAnnee -
      * @param pDerniereValeur -
+     * @param pJournalCode -                       
      */
-    public SequenceEcritureComptable(Integer pAnnee, Integer pDerniereValeur) {
+    public SequenceEcritureComptable(Integer pAnnee, Integer pDerniereValeur, String pJournalCode) {
         annee = pAnnee;
         derniereValeur = pDerniereValeur;
+        journalCode = pJournalCode;
     }
 
 

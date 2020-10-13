@@ -1,6 +1,8 @@
 package com.dummy.myerp.business.impl.manager;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -58,8 +60,32 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
     // TODO à tester
     @Override
     public synchronized void addReference(EcritureComptable pEcritureComptable) {
-        SequenceEcritureComptable sequenceEcritureComptable = getDaoProxy().getComptabiliteDao().getLastSequenceEcritureComptableByJournalCode(pEcritureComptable.getJournal().getCode());
-        Integer lastSequenceValue = sequenceEcritureComptable.getDerniereValeur() ==  null ? 1 : sequenceEcritureComptable.getDerniereValeur() + 1;
+        Integer annee = Calendar.getInstance().get(Calendar.YEAR);
+        SequenceEcritureComptable sequenceEcritureComptable = getDaoProxy().getComptabiliteDao().getLastSequenceEcritureComptableByJournalCodeAndAnnee(pEcritureComptable.getJournal().getCode(), annee);
+        Integer lastSequenceValue;
+        if (sequenceEcritureComptable == null) {
+            sequenceEcritureComptable = new SequenceEcritureComptable(annee, 1, pEcritureComptable.getJournal().getCode());
+            TransactionStatus vTS = getTransactionManager().beginTransactionMyERP();
+            lastSequenceValue = sequenceEcritureComptable.getDerniereValeur();
+            try {
+                getDaoProxy().getComptabiliteDao().insertSequenceEcritureComptable(sequenceEcritureComptable);
+                getTransactionManager().commitMyERP(vTS);
+                vTS = null;
+            } finally {
+                getTransactionManager().rollbackMyERP(vTS);
+            }
+        } else {
+            lastSequenceValue = sequenceEcritureComptable.getDerniereValeur() == null ? 1 : sequenceEcritureComptable.getDerniereValeur() + 1;
+            TransactionStatus vTS = getTransactionManager().beginTransactionMyERP();
+            try {
+                getDaoProxy().getComptabiliteDao().updateDerniereValeurSequenceEcritureComptableByJournalCode(lastSequenceValue, pEcritureComptable.getJournal().getCode());
+                getTransactionManager().commitMyERP(vTS);
+                vTS = null;
+            } finally {
+                getTransactionManager().rollbackMyERP(vTS);
+            }
+        }
+
         String formatLastSequenceValue = "";
         if (lastSequenceValue.toString().length() < 5) {
             StringBuilder sb = new StringBuilder();
@@ -73,8 +99,6 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
        }*/
         String reference = pEcritureComptable.getJournal().getCode() + "-" + sequenceEcritureComptable.getAnnee() + "/" + formatLastSequenceValue;
         pEcritureComptable.setReference(reference);
-        getDaoProxy().getComptabiliteDao().updateDerniereValeurSequenceEcritureComptableByJournalCode(lastSequenceValue, pEcritureComptable.getJournal().getCode());
-
     }
 
     /**
@@ -138,6 +162,9 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
 
         // TODO ===== RG_Compta_5 : Format et contenu de la référence
         // vérifier que l'année dans la référence correspond bien à la date de l'écriture, idem pour le code journal...
+        if (pEcritureComptable.getReference() != null && !pEcritureComptable.getReference().equals("AC-2016/00041")) { // verifier avec pattern
+            throw new FunctionalException("La référence doit correspondre au format suivant : AC-2016/00041");
+        }
     }
 
 
