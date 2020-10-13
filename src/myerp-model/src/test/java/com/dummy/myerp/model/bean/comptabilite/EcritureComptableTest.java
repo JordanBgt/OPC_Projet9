@@ -6,6 +6,8 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class EcritureComptableTest {
 
@@ -38,6 +40,24 @@ public class EcritureComptableTest {
         vEcriture.getListLigneEcriture().add(this.createLigne(2, null, "30"));
         vEcriture.getListLigneEcriture().add(this.createLigne(2, "1", "2"));
         Assert.assertFalse(vEcriture.toString(), vEcriture.isEquilibree());
+    }
+
+    @Test
+    public void getTotalDebit() {
+        EcritureComptable vEcritureComptable = new EcritureComptable();
+        vEcritureComptable.setLibelle("Libellé");
+        vEcritureComptable.getListLigneEcriture().add(this.createLigne(1, "200.50", null));
+        vEcritureComptable.getListLigneEcriture().add(this.createLigne(1, "100.50", "33"));
+        assertThat(vEcritureComptable.getTotalDebit()).isEqualByComparingTo(new BigDecimal(301));
+    }
+
+    @Test
+    public void getTotalCredit() {
+        EcritureComptable vEcritureComptable = new EcritureComptable();
+        vEcritureComptable.setLibelle("Libellé");
+        vEcritureComptable.getListLigneEcriture().add(this.createLigne(2, null, "301"));
+        vEcritureComptable.getListLigneEcriture().add(this.createLigne(2, "40", "7"));
+        assertThat(vEcritureComptable.getTotalCredit()).isEqualByComparingTo(new BigDecimal(308));
     }
 
 }
