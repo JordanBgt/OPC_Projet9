@@ -68,9 +68,9 @@ public final class SpringRegistry {
      * @return Object
      */
     protected static Object getBean(String pBeanId) {
-        SpringRegistry.LOGGER.debug("[DEBUT] SpringRegistry.getBean() - Bean ID : " + pBeanId);
+        SpringRegistry.LOGGER.debug("[DEBUT] SpringRegistry.getBean() - Bean ID : {}", pBeanId);
         Object vBean = SpringRegistry.getInstance().contextAppli.getBean(pBeanId);
-        SpringRegistry.LOGGER.debug("[FIN] SpringRegistry.getBean() - Bean ID : " + pBeanId);
+        SpringRegistry.LOGGER.debug("[FIN] SpringRegistry.getBean() - Bean ID : {}",pBeanId);
         return vBean;
     }
 
