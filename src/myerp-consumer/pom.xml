@@ -118,7 +118,7 @@
                         <directory>src/test/resources</directory>
                     </testResource>
                     <testResource>
-                        <directory>src/testconsumer/resources</directory>
+                        <directory>src/test-consumer/resources</directory>
                     </testResource>
                 </testResources>
             </build>
