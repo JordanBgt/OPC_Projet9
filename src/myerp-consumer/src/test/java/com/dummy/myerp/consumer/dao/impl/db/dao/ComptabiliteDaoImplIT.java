@@ -209,17 +209,6 @@ public class ComptabiliteDaoImplIT extends ConsumerTestCase {
     }
 
     @Test
-    public void getLastSequenceEcritureComptableThrowsNotFoundException() {
-        // GIVEN
-        String journalCode = "BQ";
-        Integer annee = 1991;
-
-        // THEN
-        assertThatThrownBy(() -> comptabiliteDao.getLastSequenceEcritureComptableByJournalCodeAndAnnee(journalCode, annee))
-                .isInstanceOf(NotFoundException.class);
-    }
-
-    @Test
     public void updateDerniereValeurSequenceEcritureComptableByJournalCode() throws NotFoundException {
         // GIVEN
         SequenceEcritureComptable sequenceEcritureComptable = SequenceEcritureComptableFixture.buildSequenceEcritureComptable();
@@ -265,12 +254,7 @@ public class ComptabiliteDaoImplIT extends ConsumerTestCase {
         comptabiliteDao.deleteSequenceEcritureComptable(sequenceEcritureComptable);
 
         // THEN
-        assertThatThrownBy(
-                () -> comptabiliteDao.getLastSequenceEcritureComptableByJournalCodeAndAnnee(
-                        sequenceEcritureComptable.getJournalCode(),
-                        sequenceEcritureComptable.getAnnee()
-                )
-        ).isInstanceOf(NotFoundException.class);
+        assertThat(comptabiliteDao.getLastSequenceEcritureComptableByJournalCodeAndAnnee(sequenceEcritureComptable.getJournalCode(), sequenceEcritureComptable.getAnnee())).isNull();
 
     }
 }

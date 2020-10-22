@@ -90,7 +90,7 @@ public interface ComptabiliteDao {
      * @param journalCode code du journal dont on souhaite récupérer la séquence
      * @return Integer
      */
-    SequenceEcritureComptable getLastSequenceEcritureComptableByJournalCodeAndAnnee(String journalCode, Integer annee) throws Exception;
+    SequenceEcritureComptable getLastSequenceEcritureComptableByJournalCodeAndAnnee(String journalCode, Integer annee);
 
     /**
      * Mettre à jour le champ "derniere_valeur" de la séquence écriture comptable
