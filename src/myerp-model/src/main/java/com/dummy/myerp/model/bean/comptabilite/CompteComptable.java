@@ -96,4 +96,18 @@ public class CompteComptable {
         }
         return vRetour;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CompteComptable that = (CompteComptable) o;
+        return numero.equals(that.numero) &&
+                libelle.equals(that.libelle);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero, libelle);
+    }
 }

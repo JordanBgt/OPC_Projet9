@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -130,5 +131,23 @@ public class EcritureComptable {
             .append(StringUtils.join(listLigneEcriture, "\n")).append("\n]")
             .append("}");
         return vStB.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EcritureComptable that = (EcritureComptable) o;
+        return Objects.equals(id, that.id) &&
+                journal.equals(that.journal) &&
+                Objects.equals(reference, that.reference) &&
+                date.equals(that.date) &&
+                libelle.equals(that.libelle) &&
+                Objects.equals(listLigneEcriture, that.listLigneEcriture);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, journal, reference, date, libelle, listLigneEcriture);
     }
 }
