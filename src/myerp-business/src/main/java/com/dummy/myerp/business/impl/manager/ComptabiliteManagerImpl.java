@@ -2,7 +2,6 @@ package com.dummy.myerp.business.impl.manager;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -57,10 +56,13 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
     /**
      * {@inheritDoc}
      */
-    // TODO à tester
+    // TODO à tester : tester quand année existe, et quand n'existe pas
     @Override
-    public synchronized void addReference(EcritureComptable pEcritureComptable) {
-        Integer annee = Calendar.getInstance().get(Calendar.YEAR);
+    public synchronized void addReference(EcritureComptable pEcritureComptable) throws Exception {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(pEcritureComptable.getDate());
+        int annee = calendar.get(Calendar.YEAR);
         SequenceEcritureComptable sequenceEcritureComptable = getDaoProxy().getComptabiliteDao().getLastSequenceEcritureComptableByJournalCodeAndAnnee(pEcritureComptable.getJournal().getCode(), annee);
         Integer lastSequenceValue;
         if (sequenceEcritureComptable == null) {
@@ -94,9 +96,7 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
             }
             sb.append(lastSequenceValue);
             formatLastSequenceValue = sb.toString();
-        } /*else if (lastSequenceValue.length() > 5) {
-           throw new Exception("La dernière valeur de la sequence est supérieure à 99999"); // TODO : JB => voir si on throw une exception ou pas, auquel cas il faut modifier l'interface
-       }*/
+        }
         String reference = pEcritureComptable.getJournal().getCode() + "-" + sequenceEcritureComptable.getAnnee() + "/" + formatLastSequenceValue;
         pEcritureComptable.setReference(reference);
     }
