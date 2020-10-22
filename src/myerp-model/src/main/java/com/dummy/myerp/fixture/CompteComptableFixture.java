@@ -1,4 +1,4 @@
-package fixture;
+package com.dummy.myerp.fixture;
 
 import com.dummy.myerp.model.bean.comptabilite.CompteComptable;
 
