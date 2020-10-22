@@ -1,9 +1,9 @@
 package com.dummy.myerp.consumer.dao.impl.db.dao;
 
+import com.dummy.myerp.fixture.*;
 import com.dummy.myerp.model.bean.comptabilite.*;
 import com.dummy.myerp.technical.exception.NotFoundException;
 import com.dummy.myerp.testconsumer.consumer.ConsumerTestCase;
-import fixture.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -195,7 +195,7 @@ public class ComptabiliteDaoImplIT extends ConsumerTestCase {
     }
 
     @Test
-    public void getLastSequenceEcritureComptableByJournalCodeAndAnnee() {
+    public void getLastSequenceEcritureComptableByJournalCodeAndAnnee() throws NotFoundException {
         // GIVEN
         SequenceEcritureComptable sequenceEcritureComptable = SequenceEcritureComptableFixture.buildSequenceEcritureComptable();
 
@@ -209,7 +209,18 @@ public class ComptabiliteDaoImplIT extends ConsumerTestCase {
     }
 
     @Test
-    public void updateDerniereValeurSequenceEcritureComptableByJournalCode() {
+    public void getLastSequenceEcritureComptableThrowsNotFoundException() {
+        // GIVEN
+        String journalCode = "BQ";
+        Integer annee = 1991;
+
+        // THEN
+        assertThatThrownBy(() -> comptabiliteDao.getLastSequenceEcritureComptableByJournalCodeAndAnnee(journalCode, annee))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    public void updateDerniereValeurSequenceEcritureComptableByJournalCode() throws NotFoundException {
         // GIVEN
         SequenceEcritureComptable sequenceEcritureComptable = SequenceEcritureComptableFixture.buildSequenceEcritureComptable();
         sequenceEcritureComptable.setDerniereValeur(62);
@@ -228,7 +239,7 @@ public class ComptabiliteDaoImplIT extends ConsumerTestCase {
     }
 
     @Test
-    public void insertSequenceEcritureComptable() {
+    public void insertSequenceEcritureComptable() throws NotFoundException {
         // GIVEN
         SequenceEcritureComptable sequenceEcritureComptable = new SequenceEcritureComptable(2020, 1, "AC");
 
@@ -240,5 +251,26 @@ public class ComptabiliteDaoImplIT extends ConsumerTestCase {
                 comptabiliteDao.getLastSequenceEcritureComptableByJournalCodeAndAnnee(sequenceEcritureComptable.getJournalCode(),
                         sequenceEcritureComptable.getAnnee());
         assertThat(result).isEqualTo(sequenceEcritureComptable);
+
+        comptabiliteDao.deleteSequenceEcritureComptable(sequenceEcritureComptable);
+    }
+
+    @Test
+    public void deleteSequenceEcritureComptable() {
+        // GIVEN
+        SequenceEcritureComptable sequenceEcritureComptable = new SequenceEcritureComptable(2020, 1, "AC");
+        comptabiliteDao.insertSequenceEcritureComptable(sequenceEcritureComptable);
+
+        // WHEN
+        comptabiliteDao.deleteSequenceEcritureComptable(sequenceEcritureComptable);
+
+        // THEN
+        assertThatThrownBy(
+                () -> comptabiliteDao.getLastSequenceEcritureComptableByJournalCodeAndAnnee(
+                        sequenceEcritureComptable.getJournalCode(),
+                        sequenceEcritureComptable.getAnnee()
+                )
+        ).isInstanceOf(NotFoundException.class);
+
     }
 }

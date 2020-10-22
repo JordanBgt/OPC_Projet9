@@ -267,13 +267,19 @@ public class ComptabiliteDaoImpl extends AbstractDbConsumer implements Comptabil
         SQLgetSequenceEcritureComptableByJournalCodeAndAnnee = pSQLgetSequenceEcritureComptableByJournalCodeAndAnnee;
     }
     @Override
-    public SequenceEcritureComptable getLastSequenceEcritureComptableByJournalCodeAndAnnee(String pJournalCode, Integer annee) {
+    public SequenceEcritureComptable getLastSequenceEcritureComptableByJournalCodeAndAnnee(String pJournalCode, Integer pAnnee) throws NotFoundException {
         NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource(DataSourcesEnum.MYERP));
         MapSqlParameterSource vSqlParams = new MapSqlParameterSource();
         vSqlParams.addValue("journal_code", pJournalCode);
-        vSqlParams.addValue("annee", annee);
+        vSqlParams.addValue("annee", pAnnee);
         SequenceEcritureComptableRM vRM = new SequenceEcritureComptableRM();
-        return vJdbcTemplate.queryForObject(SQLgetSequenceEcritureComptableByJournalCodeAndAnnee, vSqlParams, vRM);
+        SequenceEcritureComptable vBean;
+        try {
+            vBean = vJdbcTemplate.queryForObject(SQLgetSequenceEcritureComptableByJournalCodeAndAnnee, vSqlParams, vRM);
+        } catch (EmptyResultDataAccessException vEx) {
+            throw new NotFoundException("SequenceEcritureComptable non trouvée : journal_code = " + pJournalCode + ", année = " + pAnnee);
+        }
+        return vBean;
     }
 
     // ==================== SequenceEcritureComptable - UPDATE ====================
@@ -310,4 +316,22 @@ public class ComptabiliteDaoImpl extends AbstractDbConsumer implements Comptabil
         vSqlParams.addValue("derniere_valeur", pSequenceEcritureComptable.getDerniereValeur());
         vJdbcTemplate.update(SQLinsertSequenceEcritureComptable, vSqlParams);
     }
+
+    // ==================== SequenceEcritureComptable - DELETE ====================
+
+    /** SQLdeleteSequenceEcritureComptable*/
+    private static String SQLdeleteSequenceEcritureComptable;
+    public void setSQLdeleteSequenceEcritureComptable(String pSQLdeleteSequenceEcritureComptable) {
+        SQLdeleteSequenceEcritureComptable = pSQLdeleteSequenceEcritureComptable;
+    }
+
+    @Override
+    public void deleteSequenceEcritureComptable(SequenceEcritureComptable pSequenceEcritureComptable) {
+        NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource(DataSourcesEnum.MYERP));
+        MapSqlParameterSource vSqlParams = new MapSqlParameterSource();
+        vSqlParams.addValue("journal_code", pSequenceEcritureComptable.getJournalCode());
+        vSqlParams.addValue("annee", pSequenceEcritureComptable.getAnnee());
+        vJdbcTemplate.update(SQLdeleteSequenceEcritureComptable, vSqlParams);
+    }
+
 }
