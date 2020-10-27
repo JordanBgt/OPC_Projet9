@@ -15,4 +15,12 @@ public class LigneEcritureComptableFixture {
                 .collect(Collectors.toList());
     }
 
+    public static LigneEcritureComptable buildLigneEcritureComptableDebit() {
+        return new LigneEcritureComptable(CompteComptableFixture.buildCompteComptableClients(), "libelle", new BigDecimal("100.00"), null);
+    }
+
+    public static LigneEcritureComptable buildLigneEcritureComptableCredit() {
+        return new LigneEcritureComptable(CompteComptableFixture.buildCompteComptableClients(), "libelle", null, new BigDecimal("100.00"));
+    }
+
 }
