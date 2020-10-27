@@ -160,9 +160,17 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
                 "L'écriture comptable doit avoir au moins deux lignes : une ligne au débit et une ligne au crédit.");
         }
 
-        // TODO ===== RG_Compta_5 : Format et contenu de la référence
-        // vérifier que l'année dans la référence correspond bien à la date de l'écriture, idem pour le code journal...
-        if (pEcritureComptable.getReference() != null && !pEcritureComptable.getReference().equals("AC-2016/00041")) { // verifier avec pattern
+        // On vérifie le respect de la RG5
+        checkReference(pEcritureComptable);
+    }
+
+    protected void checkReference(EcritureComptable pEcritureComptable) throws FunctionalException {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(pEcritureComptable.getDate());
+        String annee = Integer.toString(calendar.get(Calendar.YEAR));
+        String codeJournal = pEcritureComptable.getJournal().getCode();
+
+        if(!pEcritureComptable.getReference().substring(0, 2).equals(codeJournal) && !pEcritureComptable.getReference().substring(3,7).equals(annee)) {
             throw new FunctionalException("La référence doit correspondre au format suivant : AC-2016/00041");
         }
     }
@@ -217,6 +225,7 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
      */
     @Override
     public void updateEcritureComptable(EcritureComptable pEcritureComptable) throws FunctionalException {
+        this.checkEcritureComptable(pEcritureComptable);
         TransactionStatus vTS = getTransactionManager().beginTransactionMyERP();
         try {
             getDaoProxy().getComptabiliteDao().updateEcritureComptable(pEcritureComptable);
