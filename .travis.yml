@@ -17,7 +17,7 @@ addons:
     toekn: $SONAR_TOKEN
 
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=JordanBgt_OC_Projet9_test
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=JordanBgt_OPC_Projet9
 
 after_success:
   - cd docker/dev
