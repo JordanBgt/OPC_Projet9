@@ -113,7 +113,7 @@ public class ComptabiliteDaoImplIT extends ConsumerTestCase {
         // THEN
         assertThat(ecritureComptable.getId()).isNotNull();
 
-        comptabiliteDao.deleteEcritureComptable(ecritureComptable.getId()); // TODO : voir si on peut faire un rollback
+        comptabiliteDao.deleteEcritureComptable(ecritureComptable.getId());
     }
 
     @Test

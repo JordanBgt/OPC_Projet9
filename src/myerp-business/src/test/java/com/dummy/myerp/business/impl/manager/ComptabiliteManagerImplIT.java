@@ -72,7 +72,6 @@ public class ComptabiliteManagerImplIT extends BusinessTestCase {
 
         // THEN
         assertThat(ecritureComptable.getReference()).isEqualTo("AC-2016/00041");
-        // TODO : voir comment invoquer getDaoProxy() pour vérifier que la valeur est bien incrémentée
         getTransactionManager().rollbackMyERP(ts);
     }
 
