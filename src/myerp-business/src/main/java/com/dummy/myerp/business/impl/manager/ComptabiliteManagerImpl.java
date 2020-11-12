@@ -126,7 +126,7 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
               + vViolations.stream()
               .findFirst()
               .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
-              .orElse("pas la"),
+              .orElse("pas la !!"),
               vViolations);
         }
 
